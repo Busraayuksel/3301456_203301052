@@ -107,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     },
                     child: Text(
-                      'GİRİŞ YAP',
+                      'GİRİŞ YAPa',
                       style: TextStyle(fontSize: ekranGenisligi / 25),
                     ),
                   ),
