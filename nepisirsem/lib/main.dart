@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-//import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nepisirsem/router/routerClass.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -176,13 +175,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       }
                         var box = Hive.box<String>('lastLogin');
                          await  box.clear();
-                           box.add(textEditingControllerEmail.text.toString());
-                           box.add(textEditingControllerPassword.text.toString());
+                           //box.add(textEditingControllerEmail.text.toString());
+                           //box.add(textEditingControllerPassword.text.toString());
                           
                             await box.put(textEditingControllerEmail.text.toString(), textEditingControllerPassword.text.toString());
-                             box.values.forEach((element) {
-                             debugPrint(element.toString());
-                             });
+                           debugPrint(box.toMap().toString());
+                           debugPrint(box.get(textEditingControllerEmail.text.toString()));
+                           debugPrint(box.length.toString());
                     },
                     child: Text(
                       'Kayıt ol',
