@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class FirebaseService {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  
 
   Future<void> registerFirebase(
       //Kayıt işlemini yaptık bundan sonra kullanıcı girişini de yapıyoruz.
@@ -47,4 +48,6 @@ class FirebaseService {
       'email': email,
     }, SetOptions(merge: true));
   }
+
+
 }

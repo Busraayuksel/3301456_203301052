@@ -1,6 +1,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:nepisirsem/main.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class Kategoriler extends StatefulWidget {
@@ -11,7 +12,9 @@ class Kategoriler extends StatefulWidget {
 }
 
 class _KategorilerState extends State<Kategoriler> {
+  TextEditingController changePassword = TextEditingController();
   FirebaseAuth auth = FirebaseAuth.instance;
+
     @override
     void initState() {
       super.initState();
@@ -100,18 +103,53 @@ class _KategorilerState extends State<Kategoriler> {
                     ),),
                 ),
               ),
-          Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(bottom: ekranYuksekligi / 20),
-                child: SizedBox(
-                  width: ekranGenisligi / 2,
-                  height: ekranYuksekligi / 2,
-                  child: Image.asset('resimler/nepisirsem.png'),
+              Padding(padding: EdgeInsets.all(ekranYuksekligi / 25),
+                child:  TextField(
+                  controller: changePassword,
+                  decoration: const InputDecoration(
+                      hintText: "changepassword", 
+                      filled: true, 
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(10.0)) 
+                              )
+                          ),
                 ),
               ),
-            ],
-          ),
+              Padding(
+                padding: EdgeInsets.all(ekranYuksekligi / 30),
+                child: SizedBox(
+                  width: ekranGenisligi / 2,
+                  height: ekranYuksekligi / 12,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.pink,
+                      onPrimary: Colors.white,
+                    ),
+                    onPressed: ()  async {
+                      await auth.currentUser!.updatePassword(changePassword.text);
+                      await auth.signOut();
+                      showDialog(context: context, builder: (BuildContext context ) {
+                            return AlertDialog( title: Text("şifre değişti"),
+                           content: SizedBox(height: ekranYuksekligi/35,child: Text("işlem başarılı!"),),
+                             );                          
+                            });        
+                            Future.delayed(Duration(seconds: 2));
+                      Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>  MyApp()),
+                          );
+
+                    },
+                    child: Text(
+                      'şifreyi değiştir',
+                      style: TextStyle(fontSize: ekranGenisligi / 25),
+                    ),
+                  ),
+                ),
+              ),
         ],
       ),
     );
@@ -140,8 +178,15 @@ class _KategorilerState extends State<Kategoriler> {
 deleteUser() async{
   
       await auth.currentUser!.delete();
-    
-  } 
+      await auth.signOut();
+      Navigator.push(
+
+        context,
+        MaterialPageRoute(
+          builder: (context) =>  MyApp()),
+          );
+  }
+
 }
 
 class MonthUser {

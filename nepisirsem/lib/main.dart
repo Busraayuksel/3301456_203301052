@@ -1,16 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+//import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nepisirsem/router/routerClass.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 
+
+//import 'firebase/firebase_service.dart';
 import 'kategoriler.dart';
 import 'package:nepisirsem/yardim.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  /*WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   final documentDirectory = await getApplicationDocumentsDirectory();
   Hive.init(documentDirectory.path);
@@ -23,7 +27,11 @@ void main() async {
   //     //Kategorilere yönlendir
   //   }  
   // });
-
+  await Hive.initFlutter('lastLogin');
+  var box = await Hive.openBox<String>('lastLogin');
+  */
+  await Hive.initFlutter('nepisirsem');
+  var box = await Hive.openBox<String>('lastLogin');
   runApp(const MyApp());
 }
 
@@ -145,17 +153,20 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     onPressed: ()  async {
                       
+                    
                         try {
                           // FirebaseService firebaseService = FirebaseService();
                           // firebaseService.loginFirebase(
                           //     textEditingControllerEmail.text.toString(),
                           //     textEditingControllerPassword.text.toString());
-                            await auth.createUserWithEmailAndPassword(email: textEditingControllerEmail.text, password:textEditingControllerPassword.text);
+                          
+                            await auth.createUserWithEmailAndPassword(email: textEditingControllerEmail.text, password:textEditingControllerPassword.text);  
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => const Kategoriler()),
                           );
+
                         } catch (e) {
                           showDialog(context: context, builder: (BuildContext context ) {
                             return AlertDialog( title: Text("hatalı işlem"),
@@ -163,6 +174,15 @@ class _MyHomePageState extends State<MyHomePage> {
                              );                          
                             });                      
                       }
+                        var box = Hive.box<String>('lastLogin');
+                         await  box.clear();
+                           box.add(textEditingControllerEmail.text.toString());
+                           box.add(textEditingControllerPassword.text.toString());
+                          
+                            await box.put(textEditingControllerEmail.text.toString(), textEditingControllerPassword.text.toString());
+                             box.values.forEach((element) {
+                             debugPrint(element.toString());
+                             });
                     },
                     child: Text(
                       'Kayıt ol',
@@ -195,7 +215,32 @@ class _MyHomePageState extends State<MyHomePage> {
                           
                             });
                         }
-                      
+                     /*   FirebaseService firebaseService = FirebaseService();
+                      try {
+                        var box = Hive.box("lastLogin");
+                        firebaseService.loginFirebase(
+                            textEditingControllerEmail.text.toString(),
+                            textEditingControllerPassword.text.toString());
+                        if (box.isNotEmpty) {
+                          Fluttertoast.showToast(msg: box.get("lastLogin"));
+                        }
+                        box.put(
+                            "lastLogin", DateTime.now().millisecondsSinceEpoch);
+                      } catch (e) {
+                        showDialog(context: context, builder: (BuildContext context ) {
+                            return AlertDialog( title: Text("hatalı işlem"),
+                           content: SizedBox(height: ekranYuksekligi/35,child:const  Text("kayıtlı kullanıcı!"),),
+                             );                          
+                            });
+                      }
+                      if (FirebaseAuth.instance.currentUser != null) {
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          "/categories",
+                          (route) => false,
+                        );
+                      }
+                      */
                     },
                     child: Text(
                       'giriş yap ',
